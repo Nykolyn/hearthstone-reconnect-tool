@@ -1,0 +1,50 @@
+name: Bug report
+description: The reconnect fails, is slow, or the app misbehaves.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting! Before you paste anything, **remove personal data**: your BattleTag,
+        your Windows user name inside file paths, and your IP address.
+
+        Security problems: please don't file them here. Use private reporting instead (see SECURITY.md).
+  - type: input
+    id: version
+    attributes:
+      label: HS Reconnector version
+      description: Shown in the bottom-right corner of the window.
+      placeholder: v1.0.0
+    validations:
+      required: true
+  - type: input
+    id: windows
+    attributes:
+      label: Windows version
+      placeholder: Windows 11 24H2
+    validations:
+      required: true
+  - type: dropdown
+    id: mode
+    attributes:
+      label: Game mode
+      options:
+        - Battlegrounds
+        - Constructed / other
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What you did, what you expected, and what happened instead. Include the exact text on the button and in the status line.
+    validations:
+      required: true
+  - type: textarea
+    id: log
+    attributes:
+      label: Hearthstone log lines (optional)
+      description: |
+        Lines around the reconnect from Hearthstone's
+        Logs\Hearthstone_<timestamp>\GameNetLogger.log (redact personal data).
+      render: text

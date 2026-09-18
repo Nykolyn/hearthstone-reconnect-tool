@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net48</TargetFramework>
+    <AssemblyName>HsReconnector</AssemblyName>
+    <RootNamespace>HsReconnectorApp</RootNamespace>
+    <LangVersion>latest</LangVersion>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <Product>HS Reconnector</Product>
+    <AssemblyTitle>HS Reconnector - Hearthstone reconnect tool</AssemblyTitle>
+    <Description>One-click Hearthstone reconnect to skip Battlegrounds combat animations.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Drawing" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Shared\ReconnectCore.cs" Link="Shared\ReconnectCore.cs" />
+    <Compile Include="..\Shared\GameServerLocator.cs" Link="Shared\GameServerLocator.cs" />
+    <Compile Include="..\Shared\ReverseDnsPrimer.cs" Link="Shared\ReverseDnsPrimer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+  </ItemGroup>
+
+</Project>

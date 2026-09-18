@@ -1,0 +1,13 @@
+# Normalize line endings in the repository; check out with the platform default.
+* text=auto
+
+*.cs      text diff=csharp
+*.md      text diff=markdown
+*.csproj  text eol=crlf
+*.props   text eol=crlf
+*.sln     text eol=crlf
+*.ps1     text eol=crlf
+
+*.dll     binary
+*.exe     binary
+*.zip     binary

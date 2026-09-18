@@ -1,0 +1,120 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*.*.*']
+  pull_request:
+  workflow_dispatch:
+
+# Read-only by default; only the release job may write, and only on a tag.
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ !startsWith(github.ref, 'refs/tags/') }}
+
+jobs:
+  build:
+    runs-on: windows-latest
+    env:
+      ContinuousIntegrationBuild: 'true'   # read by MSBuild: deterministic paths, warnings as errors
+      DOTNET_CLI_TELEMETRY_OPTOUT: '1'
+      DOTNET_NOLOGO: '1'
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Build, check and package
+        shell: pwsh
+        run: ./build.ps1 -Package
+
+      - name: Check tag matches version
+        if: startsWith(github.ref, 'refs/tags/v')
+        shell: pwsh
+        run: |
+          $exe = Get-Item artifacts/HsReconnector.exe
+          $version = [Reflection.AssemblyName]::GetAssemblyName($exe.FullName).Version.ToString(3)
+          if ("v$version" -ne $env:GITHUB_REF_NAME) {
+            throw "Tag $env:GITHUB_REF_NAME does not match <Version>$version</Version> in Directory.Build.props"
+          }
+
+      - name: Summary
+        shell: pwsh
+        run: |
+          "### HsReconnector" >> $env:GITHUB_STEP_SUMMARY
+          '```' >> $env:GITHUB_STEP_SUMMARY
+          Get-Content artifacts/SHA256SUMS.txt >> $env:GITHUB_STEP_SUMMARY
+          '```' >> $env:GITHUB_STEP_SUMMARY
+
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: HsReconnector
+          path: artifacts/
+          if-no-files-found: error
+
+  release:
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write       # create the release
+      id-token: write       # sign the build-provenance attestation
+      attestations: write   # store it
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: HsReconnector
+          path: artifacts
+
+      # Lets anyone check the exe came from this workflow:
+      #   gh attestation verify HsReconnector.exe --repo <owner>/<repo>
+      - uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+        with:
+          subject-path: |
+            artifacts/HsReconnector.exe
+            artifacts/HsReconnector-v*.zip
+
+      - name: Publish GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          version="${TAG#v}"
+
+          # Release notes = this version's section of CHANGELOG.md.
+          awk -v v="$version" '
+            $0 ~ "^## \\[" v "\\]" { found = 1; next }
+            found && /^## \[/      { exit }
+            found                  { print }
+          ' CHANGELOG.md > notes.md
+          if [ ! -s notes.md ]; then
+            echo "CHANGELOG.md has no section for [$version]" >&2
+            exit 1
+          fi
+          cat >> notes.md <<EOF
+
+          ---
+          **Download:** \`HsReconnector.exe\` below (portable, ~35 KB), or the zip. Windows 10/11, asks for administrator rights on start.
+
+          **Verify:** compare with \`SHA256SUMS.txt\`, or \`gh attestation verify HsReconnector.exe --repo ${GITHUB_REPOSITORY}\`.
+          EOF
+
+          gh release create "$TAG" \
+            --repo "$GITHUB_REPOSITORY" \
+            --verify-tag \
+            --title "HS Reconnector $TAG" \
+            --notes-file notes.md \
+            artifacts/HsReconnector.exe \
+            artifacts/HsReconnector-v*.zip \
+            artifacts/SHA256SUMS.txt

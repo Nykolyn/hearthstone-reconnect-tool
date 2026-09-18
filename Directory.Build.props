@@ -1,0 +1,28 @@
+<Project>
+
+  <!--
+    Release number: the ONLY place it lives. The window title shows it, build.ps1 names the
+    package after it, and the release workflow refuses a vX.Y.Z tag that does not match.
+    Bump it together with CHANGELOG.md.
+  -->
+  <PropertyGroup>
+    <Version>1.0.0</Version>
+    <Authors>Nykolyn</Authors>
+    <Company>Nykolyn</Company>
+    <Copyright>Copyright (c) 2026 Nykolyn</Copyright>
+    <RepositoryUrl>https://github.com/Nykolyn/hearthstone-reconnect-tool</RepositoryUrl>
+  </PropertyGroup>
+
+  <!--
+    Reproducible binaries that carry no trace of the machine they were built on. Without PathMap
+    the exe embeds the absolute path of its PDB, i.e. the builder's folder layout and user name.
+    The PDB is embedded so a crash report still has line numbers.
+  -->
+  <PropertyGroup>
+    <Deterministic>true</Deterministic>
+    <PathMap>$(MSBuildThisFileDirectory)=/_/</PathMap>
+    <DebugType>embedded</DebugType>
+    <TreatWarningsAsErrors Condition="'$(ContinuousIntegrationBuild)' == 'true'">true</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+</Project>
