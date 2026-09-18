@@ -33,7 +33,7 @@ First public release.
   steer it into loopback or LAN ranges.
 - Without administrator rights the app now stays idle, instead of polling once before it
   notices.
-- Reproducible builds: `PathMap` and deterministic compilation keep the build machine's paths
+- Deterministic builds: `PathMap` and deterministic compilation keep the build machine's paths
   out of the exe.
 
 ### Fixed

@@ -1,7 +1,9 @@
 # Normalize line endings in the repository; check out with the platform default.
 * text=auto
 
-*.cs      text diff=csharp
+# CRLF everywhere, whatever core.autocrlf says: source bytes feed the PDB checksums, so a fixed
+# line ending keeps builds of the same commit comparable.
+*.cs      text eol=crlf diff=csharp
 *.md      text diff=markdown
 *.csproj  text eol=crlf
 *.props   text eol=crlf

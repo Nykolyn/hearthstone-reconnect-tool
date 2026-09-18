@@ -83,8 +83,9 @@ The app needs administrator rights, so don't take the exe on trust. Check it in 
   ```
 - **Checksum.** Compare the output of `Get-FileHash HsReconnector.exe` with `SHA256SUMS.txt` from
   the same release.
-- **Build it yourself.** See [Building from source](#building-from-source). Builds are
-  deterministic.
+- **Build it yourself.** See [Building from source](#building-from-source). Compilation is
+  deterministic and embeds no machine-specific paths. A byte-identical exe additionally needs
+  the exact .NET SDK version the release was built with, which is shown in the workflow log.
 
 [SECURITY.md](SECURITY.md) lists everything the app does with its rights.
 

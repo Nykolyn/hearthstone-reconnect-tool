@@ -35,8 +35,9 @@ for example `C:\Program Files\HS Reconnector\`.
 
 ## Verifying a release
 
-Each release is built by GitHub Actions from the tagged commit, and the build is reproducible
-(`Deterministic` + `PathMap`).
+Each release is built by GitHub Actions from the tagged commit. Compilation is deterministic
+(`Deterministic` + `PathMap`), so the exe carries no machine-specific paths. Reproducing it byte
+for byte also requires the same .NET SDK version as the CI run, which is shown in the workflow log.
 
 - **Attestation:** `gh attestation verify HsReconnector.exe --repo Nykolyn/hearthstone-reconnect-tool`
   proves the exe was built by this repository's workflow.
