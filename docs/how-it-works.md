@@ -160,5 +160,6 @@ tools/prime-dns.ps1              Apply or undo the hosts-file fix by hand
 build.ps1                        Build, check, package
 ```
 
-`src/Shared` has no UI or HDT dependencies. The same core also powers a Hearthstone Deck Tracker
-plugin variant.
+`src/Shared` has no UI or HDT dependencies. The same core also powers the
+[Hearthstone Deck Tracker plugin](https://github.com/Nykolyn/hearthstone-reconnect-hdt-plugin).
+Keep the two copies in sync.

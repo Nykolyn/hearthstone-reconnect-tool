@@ -118,8 +118,10 @@ same thing that happens when your Wi-Fi drops for a moment. Forcing disconnects 
 area in Blizzard's Terms of Service, so use it at your own risk.
 
 **Does it work with Hearthstone Deck Tracker?**
-Yes, both run side by side. Only one program can own Ctrl+F12, so if you also use an HDT
-reconnect plugin, the first one started gets the hotkey.
+Yes, both run side by side. If you already use HDT, you may prefer the
+[HDT plugin version](https://github.com/Nykolyn/hearthstone-reconnect-hdt-plugin), which adds the
+button to HDT's overlay instead of a separate window. Use one or the other: only one program can
+own Ctrl+F12, and the first one started gets it.
 
 **Mac or Linux?**
 No. The tool relies on Windows-only APIs.
@@ -160,6 +162,8 @@ Report security issues privately; see [SECURITY.md](SECURITY.md).
 
 ## Related
 
+- [Hearthstone Reconnect Plugin for HDT](https://github.com/Nykolyn/hearthstone-reconnect-hdt-plugin):
+  the same reconnect as a Hearthstone Deck Tracker plugin, with an overlay button.
 - [HDT-Reconnector](https://github.com/haoruan/HDT-Reconnector) and
   [HsReconnectTool](https://github.com/Vaiz/HsReconnectTool) use the same `SetTcpEntry` technique.
 
